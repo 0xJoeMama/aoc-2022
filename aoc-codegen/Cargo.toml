@@ -1,0 +1,13 @@
+[package]
+name = "aoc-codegen"
+version = "0.1.0"
+edition = "2021"
+authors = ["0xJoeMama"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+proc_macro = true
+
+[dependencies]
+quote = "1.0.21"
+syn = "1.0.105"

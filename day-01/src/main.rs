@@ -1,7 +1,7 @@
 use aoc_lib::input;
 
 fn main() {
-    let _ = input::apply("input.txt", |f| {
+    let _ = input::apply("input-day-01.txt", |f| {
         println!("{}", run_part1(f));
         println!("{}", run_part2(f));
     });
@@ -21,7 +21,7 @@ fn run_part1(input: &String) -> i32 {
 }
 
 fn run_part2(input: &String) -> i32 {
-    let calories = input
+    let mut calories = input
         .split("\n\n")
         .map(|three| {
             three
@@ -30,5 +30,7 @@ fn run_part2(input: &String) -> i32 {
                 .sum::<i32>()
         })
         .collect::<Vec<_>>();
+
+    calories.sort();
     calories[calories.len() - 3..].iter().sum()
 }
