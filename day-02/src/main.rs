@@ -46,7 +46,7 @@ fn calculate_points(his: &State, mine: State) -> i32 {
 
 fn main() {
     let _ = input::apply("input-day-02.txt", |input| {
-        aoc_lib::timed(move || {
+        aoc_lib::timed(|| {
             let input = aoc_lib::timed(|| {
                 input
                     .split("\n")
@@ -71,7 +71,7 @@ fn main() {
     });
 }
 
-fn part1(input: &Vec<(State, &str)>) {
+fn part1(input: &[(State, &str)]) {
     let res = input
         .iter()
         .map(|pair| {
@@ -87,7 +87,7 @@ fn part1(input: &Vec<(State, &str)>) {
     println!("{res}");
 }
 
-fn part2(input: &Vec<(State, &str)>) {
+fn part2(input: &[(State, &str)]) {
     let res = input
         .iter()
         .map(|pair| {
