@@ -2,6 +2,7 @@
 members = [
   "aoc-lib",
   "day-01",
-  "aoc-codegen"
+  "aoc-codegen",
+  "day-02"
 ]
 
