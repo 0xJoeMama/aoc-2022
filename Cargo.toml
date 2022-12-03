@@ -1,8 +1,10 @@
 [workspace]
 members = [
   "aoc-lib",
-  "day-01",
   "aoc-codegen",
-  "day-02"
+  "test-thingy",
+  "day-01",
+  "day-02",
+  "day-03"
 ]
 
