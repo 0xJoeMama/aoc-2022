@@ -59,13 +59,11 @@ fn main() {
 
 fn part1(mut stacks: Vec<Vec<char>>, moves: &Vec<Move>) -> String {
     for mov in moves {
-        for _ in 0..mov.cnt {
-            let from = &mut stacks[mov.from];
-            let moved = from.pop().unwrap();
-            let to = &mut stacks[mov.to];
+        let from = &mut stacks[mov.from];
+        let moved = from.split_off(from.len() - mov.cnt);
+        let to = &mut stacks[mov.to];
 
-            to.push(moved);
-        }
+        to.extend(moved.iter().rev());
     }
 
     stacks.iter().filter_map(|v| v.last()).collect::<String>()
