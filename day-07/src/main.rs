@@ -1,17 +1,17 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use aoc_lib::input;
 
 #[derive(Debug)]
 struct Dir {
-    children: HashSet<String>,
+    children: Vec<String>,
     size: usize,
 }
 
 impl Dir {
     fn new() -> Self {
         Self {
-            children: HashSet::new(),
+            children: Vec::new(),
             size: 0,
         }
     }
@@ -55,9 +55,9 @@ fn main() {
             folder_stack.push("/".to_string());
 
             for line in input.lines() {
-                if line.starts_with("$") {
-                    let mut line = line.split_whitespace();
-                    line.next();
+                let mut line = line.split_whitespace();
+                let first = line.next().unwrap();
+                if first == "$" {
                     if line.next().unwrap() == "cd" {
                         let target = line.next().unwrap();
                         match target {
@@ -76,8 +76,8 @@ fn main() {
                                     folders.insert(target_name.clone(), Dir::new());
                                 }
 
-                                if let Some(last) = folders.get_mut(&last.to_string()) {
-                                    last.children.insert(target_name.clone());
+                                if let Some(last) = folders.get_mut(last) {
+                                    last.children.push(target_name.clone());
                                 }
 
                                 folder_stack.push(target_name);
@@ -85,12 +85,11 @@ fn main() {
                         }
                     }
                 } else {
-                    let mut spaced = line.split_whitespace();
-                    match spaced.next().unwrap() {
+                    match first {
                         "dir" => {}
                         nomber => {
-                            let curr_dir = folder_stack.last().unwrap().to_string();
-                            folders.get_mut(&curr_dir).unwrap().size +=
+                            let curr_dir = folder_stack.last().unwrap();
+                            folders.get_mut(curr_dir).unwrap().size +=
                                 nomber.parse::<usize>().unwrap();
                         }
                     }
@@ -104,12 +103,10 @@ fn main() {
 }
 
 fn part1(folders: &HashMap<String, Dir>) -> usize {
-    println!("Directory creation is done!");
-
-    let mut size_cache = HashMap::new();
+    let mut cache = HashMap::new();
     folders
         .values()
-        .map(|dir| dir.calculate_size(&folders, &mut size_cache))
+        .map(|dir| dir.calculate_size(&folders, &mut cache))
         .filter(|size| *size <= 100_000)
         .sum()
 }
@@ -125,11 +122,11 @@ fn part2(folders: &HashMap<String, Dir>) -> usize {
         .calculate_size(folders, &mut cache);
     let target_size = UPDATE_SIZE - (MAX_SIZE - root_size);
 
-    let mut vec = folders
+    let mut sorted = folders
         .iter()
         .map(|(_, dir)| dir.calculate_size(folders, &mut cache))
         .collect::<Vec<usize>>();
 
-    vec.sort();
-    *vec.iter().find(|&&size| size >= target_size).unwrap()
+    sorted.sort();
+    *sorted.iter().find(|&&size| size >= target_size).unwrap()
 }
