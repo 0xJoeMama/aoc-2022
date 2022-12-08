@@ -64,10 +64,6 @@ fn main() {
                             ".." => {
                                 folder_stack.pop();
                             }
-                            "/" => {
-                                folder_stack.clear();
-                                folder_stack.push("/".to_string());
-                            }
                             target_name => {
                                 let last = folder_stack.last().unwrap();
 
