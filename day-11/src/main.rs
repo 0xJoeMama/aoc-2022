@@ -88,7 +88,7 @@ impl FromStr for Monkey {
 }
 
 impl Monkey {
-    fn play(&mut self, mods: &[i64], relieved: bool) -> Vec<(usize, i64)> {
+    fn play(&mut self, mods: &[i64], relieved: bool, magic: i64) -> Vec<(usize, i64)> {
         for &modif in mods {
             self.inv.push_back(modif);
         }
@@ -106,9 +106,13 @@ impl Monkey {
 
             if relieved {
                 item /= 3;
+            } else {
             }
 
             let (div, target_true, target_false) = self.test;
+
+            item %= magic;
+
             if item % div == 0 {
                 out.push((target_true, item));
             } else {
@@ -131,12 +135,26 @@ fn main() {
             .map(|chunk| chunk.parse::<Monkey>().unwrap())
             .collect::<Vec<_>>();
 
-        println!("Part 1: {}", aoc_lib::timed(|| part1(monkeys.clone())));
-        println!("Part 2: {}", aoc_lib::timed(|| part2(monkeys)));
+        let magic = monkeys.iter().map(|m| m.test.0).fold(1, |acc, divisor| {
+            if acc % divisor == 0 {
+                acc
+            } else {
+                acc * divisor
+            }
+        });
+
+        println!(
+            "Part 1: {}",
+            aoc_lib::timed(|| part1(monkeys.clone(), magic))
+        );
+        println!(
+            "Part 2: {}",
+            aoc_lib::timed(|| part2(monkeys.clone(), magic))
+        );
     });
 }
 
-fn part1(mut monkeys: Vec<Monkey>) -> usize {
+fn part1(mut monkeys: Vec<Monkey>, magic: i64) -> usize {
     let mut modifications = Vec::with_capacity(monkeys.len());
     for _ in 0..monkeys.len() {
         modifications.push(Vec::new());
@@ -144,7 +162,7 @@ fn part1(mut monkeys: Vec<Monkey>) -> usize {
 
     for _ in 0..20 {
         for (i, monkey) in monkeys.iter_mut().enumerate() {
-            let out = monkey.play(&modifications[i], true);
+            let out = monkey.play(&modifications[i], true, magic);
             modifications[i].clear();
 
             for (target, item) in out {
@@ -162,7 +180,7 @@ fn part1(mut monkeys: Vec<Monkey>) -> usize {
         .product()
 }
 
-fn part2(mut monkeys: Vec<Monkey>) -> usize {
+fn part2(mut monkeys: Vec<Monkey>, magic: i64) -> usize {
     let mut modifications = Vec::with_capacity(monkeys.len());
 
     for _ in 0..monkeys.len() {
@@ -171,7 +189,7 @@ fn part2(mut monkeys: Vec<Monkey>) -> usize {
 
     for _ in 0..10_000 {
         for (i, monkey) in monkeys.iter_mut().enumerate() {
-            let out = monkey.play(&modifications[i], false);
+            let out = monkey.play(&modifications[i], false, magic);
             modifications[i].clear();
 
             for (target, item) in out {
@@ -179,11 +197,6 @@ fn part2(mut monkeys: Vec<Monkey>) -> usize {
             }
         }
     }
-
-    println!(
-        "Monkeh: {:#?}",
-        monkeys.iter().map(Monkey::inspections).collect::<Vec<_>>()
-    );
 
     monkeys.sort_by_key(Monkey::inspections);
     monkeys
