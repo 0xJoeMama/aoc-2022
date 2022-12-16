@@ -1,6 +1,6 @@
 use std::{
     fmt::Display,
-    ops::{Add, Mul, Neg, AddAssign, Sub, Div},
+    ops::{Add, AddAssign, Div, Mul, Neg, Sub},
 };
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Copy, PartialOrd)]
@@ -102,7 +102,6 @@ impl Sub<&Point> for Point {
             z: self.z - rhs.z,
         }
     }
-
 }
 
 impl AddAssign<&Point> for Point {
@@ -186,6 +185,5 @@ mod test {
         let a = Point::new(3, 0, 0);
         let b = Point::new(4, 0, 0);
         assert!(a.distance_squared(&b) == 1);
-
     }
 }
