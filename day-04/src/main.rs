@@ -5,10 +5,10 @@ fn main() {
     let _ = input::apply("input-day-04.txt", |f| {
         aoc_lib::timed(|| {
             let input = f
-                .split("\n")
+                .lines()
                 .filter(|s| !s.is_empty())
                 .map(|s| {
-                    s.split(",")
+                    s.split(',')
                         .map(|pair| pair.parse().unwrap())
                         .collect::<(NumberRange, NumberRange)>()
                 })

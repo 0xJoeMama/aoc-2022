@@ -28,7 +28,7 @@ fn bfs(start: &Point, end: &Point, map: &HashMap<Point, char>) -> Option<usize> 
     let mut queue = VecDeque::with_capacity(map.len());
     queue.push_back(start);
     let mut visited: HashSet<Point> = HashSet::new();
-    let mut parent = HashMap::new();
+    let mut parent = HashMap::with_capacity(map.len());
 
     while let Some(current) = queue.pop_front() {
         let curr = map[current];
@@ -48,7 +48,7 @@ fn bfs(start: &Point, end: &Point, map: &HashMap<Point, char>) -> Option<usize> 
     let mut current = end;
 
     while current != start {
-        current = *parent.get(&current)?;
+        current = *parent.get(current)?;
         path_sz += 1;
     }
 
@@ -72,21 +72,21 @@ fn main() {
 
         println!(
             "Part 1: {}",
-            aoc_lib::timed(|| part1(&points, &start, &end))
+            aoc_lib::timed(|| part1(&points, start, end))
         );
-        println!("Part 2: {}", aoc_lib::timed(|| part2(&points, &end)));
+        println!("Part 2: {}", aoc_lib::timed(|| part2(&points, end)));
     });
 }
 
 fn part1(points: &HashMap<Point, char>, start: &Point, end: &Point) -> usize {
-    bfs(start, end, &points).unwrap()
+    bfs(start, end, points).unwrap()
 }
 
 fn part2(points: &HashMap<Point, char>, end: &Point) -> usize {
     points
         .iter()
         .filter(|(_, c)| **c == 'a' || **c == 'S')
-        .filter_map(|(p, _)| bfs(p, end, &points))
+        .filter_map(|(p, _)| bfs(p, end, points))
         .min()
         .unwrap()
 }

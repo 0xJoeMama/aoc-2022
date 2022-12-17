@@ -37,7 +37,7 @@ fn part1(trees: &HashMap<Point, u32>) -> usize {
                 .iter()
                 .map(Direction::to_point)
                 .any(|ref unit| {
-                    let mut p_moved = *p.clone() + unit;
+                    let mut p_moved = **p + *unit;
 
                     while let Some(&height) = trees.get(&p_moved) {
                         p_moved += unit;
@@ -62,7 +62,7 @@ fn part2(trees: &HashMap<Point, u32>) -> usize {
                 .map(Direction::to_point)
                 .map(|ref unit| {
                     let mut view_distance = 0;
-                    let mut p_moved = p.clone() + unit;
+                    let mut p_moved = *p + unit;
 
                     while let Some(&height) = trees.get(&p_moved) {
                         view_distance += 1;

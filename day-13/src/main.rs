@@ -2,10 +2,16 @@ use aoc_lib::input;
 use core::str::FromStr;
 use std::cmp::Ordering;
 
-#[derive(Debug, Eq, PartialEq, PartialOrd, Clone)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 enum PacketValue {
     List(Vec<PacketValue>),
     Number(i64),
+}
+
+impl PartialOrd for PacketValue {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
 }
 
 impl Ord for PacketValue {
@@ -146,7 +152,7 @@ fn part2(input: Vec<(Packet, Packet)>) -> usize {
     packets.push(div1.clone());
     packets.push(div2.clone());
 
-    packets.sort_by(|a, b| a.cmp(b));
+    packets.sort();
 
     let div1 = packets.iter().position(|p| *p == div1).unwrap() + 1;
     let div2 = packets.iter().position(|p| *p == div2).unwrap() + 1;

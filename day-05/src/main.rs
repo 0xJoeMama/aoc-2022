@@ -33,23 +33,19 @@ fn main() {
         aoc_lib::timed(|| {
             let (init, moves) = f.split_once("\n\n").unwrap();
             let stacks_cnt = init.lines().last().unwrap().split_whitespace().count();
-            let mut stacks: Vec<Vec<char>> = Vec::with_capacity(stacks_cnt);
-
-            for _ in 0..stacks_cnt {
-                stacks.push(Vec::new());
-            }
+            let mut stacks: Vec<Vec<char>> = vec![Vec::new(); stacks_cnt];
 
             for line in init.lines().rev().skip(1) {
-                for i in 0..stacks_cnt {
+                for (i, stack) in stacks.iter_mut().enumerate() {
                     let package = line.chars().nth(4 * i + 1).unwrap();
 
                     if !package.is_whitespace() {
-                        stacks[i].push(package);
+                        stack.push(package);
                     }
                 }
             }
 
-            let moves = moves.lines().map(|l| l.parse::<Move>()).flatten().collect();
+            let moves = moves.lines().flat_map(|l| l.parse::<Move>()).collect();
 
             aoc_lib::timed(|| println!("{}", part1(stacks.clone(), &moves)));
             aoc_lib::timed(|| println!("{}", part2(stacks, &moves)));

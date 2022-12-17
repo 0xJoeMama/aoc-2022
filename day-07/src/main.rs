@@ -21,7 +21,7 @@ impl Dir {
         folders: &'a HashMap<String, Dir>,
         size_cache: &mut HashMap<&'a str, usize>,
     ) -> usize {
-        if self.children.len() == 0 {
+        if self.children.is_empty() {
             return self.size;
         }
 
@@ -38,7 +38,7 @@ impl Dir {
                     let ret = folders
                         .get(child)
                         .unwrap()
-                        .calculate_size(&folders, size_cache);
+                        .calculate_size(folders, size_cache);
                     size_cache.insert(child, ret);
                     ret
                 })
@@ -102,7 +102,7 @@ fn part1(folders: &HashMap<String, Dir>) -> usize {
     let mut cache = HashMap::new();
     folders
         .values()
-        .map(|dir| dir.calculate_size(&folders, &mut cache))
+        .map(|dir| dir.calculate_size(folders, &mut cache))
         .filter(|size| *size <= 100_000)
         .sum()
 }

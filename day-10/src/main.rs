@@ -5,7 +5,7 @@ use aoc_lib::input;
 fn main() {
     let _ = input::apply("input-day-10.txt", |input| {
         aoc_lib::timed(|| {
-            aoc_lib::timed(|| println!("{}", solve(&input)));
+            aoc_lib::timed(|| println!("{}", solve(input)));
         });
     });
 }
@@ -22,7 +22,7 @@ struct Pc<'a> {
 }
 
 impl<'a> Pc<'a> {
-    fn new<'b>(inst: Lines<'b>) -> Pc<'b> {
+    fn new(inst: Lines<'_>) -> Pc<'_> {
         Pc {
             clock: 0,
             instructions: inst,
@@ -41,23 +41,20 @@ impl<'a> Pc<'a> {
             self.draw();
             self.x += self.halted.take().unwrap();
             Some(res)
-        } else {
-            if let Some(inst) = self.instructions.next() {
-                let mut iter = inst.split_whitespace();
-                match iter.next().unwrap() {
-                    "addx" => {
-                        self.halted = iter.next().unwrap().parse().ok();
-                    }
-                    _ => {}
-                }
-                self.draw();
-                Some(self.get_result())
-            } else {
-                self.draw();
+        } else if let Some(inst) = self.instructions.next() {
+            let mut iter = inst.split_whitespace();
 
-                print!("{}", self.draw_buffer);
-                None
+            if iter.next().unwrap() == "addx" {
+                self.halted = iter.next().unwrap().parse().ok();
             }
+
+            self.draw();
+            Some(self.get_result())
+        } else {
+            self.draw();
+
+            print!("{}", self.draw_buffer);
+            None
         }
     }
 
@@ -95,7 +92,7 @@ impl<'a> Pc<'a> {
     }
 }
 
-fn solve(input: &String) -> i64 {
+fn solve(input: &str) -> i64 {
     let mut sum = 0;
     let mut pc = Pc::new(input.lines());
 

@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use aoc_lib::input;
 
-fn calculate_score<'a, T>(dups: T) -> i32
+fn calculate_score<T>(dups: T) -> i32
 where
     T: IntoIterator<Item = char>,
 {
@@ -18,7 +18,7 @@ where
 fn main() {
     let _ = input::apply("input-day-03.txt", |file| {
         aoc_lib::timed(|| {
-            let res = file.split("\n").filter(|l| !l.is_empty()).collect();
+            let res: Vec<&str> = file.lines().filter(|l| !l.is_empty()).collect();
             aoc_lib::timed(|| {
                 println!("{}", part1(&res));
             });
@@ -30,7 +30,7 @@ fn main() {
     });
 }
 
-fn part1(input: &Vec<&str>) -> i32 {
+fn part1(input: &[&str]) -> i32 {
     input
         .iter()
         .map(|sack| {

@@ -15,7 +15,7 @@ impl FromStr for Move {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let (dir, count) = s.split_once(" ").unwrap();
+        let (dir, count) = s.split_once(' ').unwrap();
         let dir = match dir {
             "R" => Direction::PosX,
             "L" => Direction::NegX,

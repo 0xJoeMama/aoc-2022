@@ -1,9 +1,9 @@
 use aoc_lib::input;
 
 fn main() {
-    let _ = input::apply("input-day-06.txt", |f| {
+    let _ = input::apply("input-day-06.txt", |input| {
         aoc_lib::timed(|| {
-            let input = f.split("\n").collect::<String>();
+            let input = input.lines().collect::<String>();
             aoc_lib::timed(|| println!("{}", part1(&input)));
             aoc_lib::timed(|| println!("{}", part2(&input)));
         });

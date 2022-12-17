@@ -27,7 +27,7 @@ impl FromStr for Monkey {
         let inv = lines
             .next()
             .unwrap()
-            .split_once(":")
+            .split_once(':')
             .unwrap()
             .1
             .split(", ")

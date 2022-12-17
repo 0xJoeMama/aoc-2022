@@ -7,12 +7,12 @@ fn main() {
     });
 }
 
-fn run_part1(input: &String) -> i32 {
+fn run_part1(input: &str) -> i32 {
     input
         .split("\n\n")
         .map(|three| {
             three
-                .split("\n")
+                .lines()
                 .filter_map(|s| s.parse::<i32>().ok())
                 .sum::<i32>()
         })
@@ -20,12 +20,12 @@ fn run_part1(input: &String) -> i32 {
         .unwrap_or(-1)
 }
 
-fn run_part2(input: &String) -> i32 {
+fn run_part2(input: &str) -> i32 {
     let mut calories = input
         .split("\n\n")
         .map(|three| {
             three
-                .split("\n")
+                .lines()
                 .filter_map(|s| s.parse::<i32>().ok())
                 .sum::<i32>()
         })

@@ -1,8 +1,6 @@
 [workspace]
 members = [
   "aoc-lib",
-  "aoc-codegen",
-  "test-thingy",
   "day-01",
   "day-02",
   "day-03",
@@ -15,6 +13,7 @@ members = [
   "day-10",
   "day-11",
   "day-12",
-  "day-13"
+  "day-13",
+  "day-14"
 ]
 

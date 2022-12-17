@@ -36,7 +36,7 @@ impl FromStr for NumberRange {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut pairs = s.split("-").map(|inner| inner.parse().unwrap());
+        let mut pairs = s.split('-').map(|inner| inner.parse().unwrap());
         Ok(NumberRange::new(
             pairs.next().unwrap(),
             pairs.next().unwrap(),

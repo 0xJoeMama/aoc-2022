@@ -35,13 +35,13 @@ impl State {
 }
 
 fn calculate_points(his: &State, mine: State) -> i32 {
-    return if mine == *his {
+    (if mine == *his {
         3
     } else if mine == his.get_winning() {
         6
     } else {
         0
-    } + mine.get_score();
+    } + mine.get_score())
 }
 
 fn main() {
@@ -49,7 +49,7 @@ fn main() {
         aoc_lib::timed(|| {
             let input = aoc_lib::timed(|| {
                 input
-                    .split("\n")
+                    .lines()
                     .filter(|s| !s.is_empty())
                     .map(|line| {
                         let (his, mine) = line.split_at(1);
