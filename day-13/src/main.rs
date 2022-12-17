@@ -17,17 +17,17 @@ impl PartialOrd for PacketValue {
 impl Ord for PacketValue {
     fn cmp(&self, other: &Self) -> Ordering {
         match self {
-            PacketValue::Number(a) => match other {
-                PacketValue::Number(b) => a.cmp(b),
-                PacketValue::List(_) => self.to_list().unwrap().cmp(other),
+            PacketValue::Number(my_num) => match other {
+                PacketValue::Number(other_num) => my_num.cmp(other_num),
+                PacketValue::List(_) => self.to_list().cmp(other),
             },
-            PacketValue::List(a) => match other {
-                PacketValue::List(b) => {
-                    let mut a = a.iter();
-                    let mut b = b.iter();
+            PacketValue::List(my_list) => match other {
+                PacketValue::List(other_list) => {
+                    let mut me = my_list.iter();
+                    let mut other = other_list.iter();
                     loop {
-                        match (a.next(), b.next()) {
-                            (Some(a), Some(b)) => match a.cmp(b) {
+                        match (me.next(), other.next()) {
+                            (Some(mine), Some(his)) => match mine.cmp(his) {
                                 Ordering::Equal => continue,
                                 x => return x,
                             },
@@ -37,31 +37,19 @@ impl Ord for PacketValue {
                         }
                     }
                 }
-                PacketValue::Number(_) => self.cmp(&other.to_list().unwrap()),
+                PacketValue::Number(_) => self.cmp(&other.to_list()),
             },
         }
     }
 }
 
 impl PacketValue {
-    fn to_list(&self) -> Option<PacketValue> {
-        if let PacketValue::Number(val) = self {
-            Some(PacketValue::List(vec![PacketValue::Number(*val)]))
-        } else {
-            None
-        }
+    fn to_list(&self) -> PacketValue {
+        PacketValue::List(vec![self.clone()])
     }
-}
 
-#[derive(Debug)]
-struct Packet {
-    value: PacketValue,
-}
-
-impl Packet {
-    fn parse_list(iter: &mut impl Iterator<Item = char>) -> PacketValue {
+    fn parse_list(iter: &mut impl Iterator<Item = char>) -> Self {
         let mut list = Vec::new();
-
         let mut current = String::new();
 
         fn collect(container: &mut Vec<PacketValue>, current: &mut String) {
@@ -75,7 +63,7 @@ impl Packet {
 
         while let Some(c) = iter.next() {
             match c {
-                '[' => list.push(Packet::parse_list(iter)),
+                '[' => list.push(Self::parse_list(iter)),
                 ']' => {
                     collect(&mut list, &mut current);
                     break;
@@ -95,20 +83,11 @@ impl Packet {
     }
 }
 
-impl FromIterator<char> for Packet {
-    fn from_iter<T: IntoIterator<Item = char>>(iter: T) -> Self {
-        let mut iter = iter.into_iter();
-        iter.next();
-        let res = Self::parse_list(&mut iter);
-        Packet { value: res }
-    }
-}
-
-impl FromStr for Packet {
+impl FromStr for PacketValue {
     type Err = ();
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        Ok(s.chars().collect::<Packet>())
+        Ok(Self::parse_list(&mut s.chars().skip(1)))
     }
 }
 
@@ -116,13 +95,9 @@ fn main() {
     _ = input::apply("input-day-13.txt", |input| {
         aoc_lib::timed(|| {
             let input = input
-                .split("\n\n")
-                .map(|packets| {
-                    let mut iter = packets.lines();
-                    let packet1 = iter.next().unwrap().parse::<Packet>().unwrap();
-                    let packet2 = iter.next().unwrap().parse::<Packet>().unwrap();
-                    (packet1, packet2)
-                })
+                .lines()
+                .filter(|s| !s.is_empty())
+                .flat_map(|packet| packet.parse::<PacketValue>())
                 .collect::<Vec<_>>();
 
             println!("Part 1: {}", aoc_lib::timed(|| part1(&input)));
@@ -131,21 +106,16 @@ fn main() {
     });
 }
 
-fn part1(input: &[(Packet, Packet)]) -> usize {
+fn part1(input: &[PacketValue]) -> usize {
     input
-        .iter()
+        .chunks(2)
         .enumerate()
-        .filter(|(_, (packet1, packet2))| packet1.value.cmp(&packet2.value) == Ordering::Less)
+        .filter(|(_, packets)| packets[0] < packets[1])
         .map(|(i, _)| i + 1)
         .sum()
 }
 
-fn part2(input: Vec<(Packet, Packet)>) -> usize {
-    let mut packets: Vec<PacketValue> = input
-        .into_iter()
-        .flat_map(|(packet1, packet2)| [packet1.value, packet2.value])
-        .collect();
-
+fn part2(mut packets: Vec<PacketValue>) -> usize {
     let div1 = PacketValue::List(vec![PacketValue::Number(6)]);
     let div2 = PacketValue::List(vec![PacketValue::Number(2)]);
 
