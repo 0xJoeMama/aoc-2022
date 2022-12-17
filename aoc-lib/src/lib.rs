@@ -1,6 +1,7 @@
 use std::time::Instant;
 
 pub mod input;
+pub mod parse;
 pub mod point;
 pub mod range;
 

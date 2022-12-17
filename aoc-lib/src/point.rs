@@ -141,6 +141,34 @@ impl Point {
     pub fn distance_squared(&self, other: &Point) -> i64 {
         (self.x - other.x).pow(2) + (self.y - other.y).pow(2) + (self.z - other.z).pow(2)
     }
+
+    pub fn plane_neighbors(&self) -> PlaneNeighbours<'_> {
+        PlaneNeighbours::new(self)
+    }
+}
+
+pub struct PlaneNeighbours<'a> {
+    p: &'a Point,
+    dir_idx: usize,
+}
+
+impl<'a> PlaneNeighbours<'a> {
+    fn new(p: &Point) -> PlaneNeighbours<'_> {
+        PlaneNeighbours { p, dir_idx: 0 }
+    }
+}
+
+impl<'a> Iterator for PlaneNeighbours<'a> {
+    type Item = Point;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let res = Direction::plane()
+            .get(self.dir_idx)
+            .map(|d| *self.p + d.to_point());
+
+        self.dir_idx += 1;
+        res
+    }
 }
 
 #[derive(Debug, Eq, Hash, PartialEq, Clone, Copy, PartialOrd)]

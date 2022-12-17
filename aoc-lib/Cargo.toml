@@ -6,3 +6,5 @@ authors = ["0xJoeMama"]
 
 
 [dependencies]
+regex = "1.7.0"
+lazy_static = "*"

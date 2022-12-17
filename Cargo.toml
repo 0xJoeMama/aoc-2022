@@ -17,3 +17,5 @@ members = [
   "day-14"
 ]
 
+[workspace.dependencies]
+aoc-lib = { path = "aoc-lib" }

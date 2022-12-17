@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet, VecDeque};
 
 use aoc_lib::{
     input,
-    point::{Direction, Point},
+    point::Point,
 };
 
 fn can_visit(start: char, end: char) -> bool {
@@ -33,7 +33,7 @@ fn bfs(start: &Point, end: &Point, map: &HashMap<Point, char>) -> Option<usize> 
     while let Some(current) = queue.pop_front() {
         let curr = map[current];
 
-        for neighbor in Direction::plane().iter().map(|d| d.to_point() + current) {
+        for neighbor in current.plane_neighbors() {
             if let Some((nei_pos, val)) = map.get_key_value(&neighbor) {
                 if !visited.contains(&neighbor) && can_visit(curr, *val) {
                     queue.push_back(nei_pos);
