@@ -70,10 +70,7 @@ fn main() {
         let start = points.iter().find(|(_, c)| **c == 'S').unwrap().0;
         let end = points.iter().find(|(_, c)| **c == 'E').unwrap().0;
 
-        println!(
-            "Part 1: {}",
-            aoc_lib::timed(|| part1(&points, start, end))
-        );
+        println!("Part 1: {}", aoc_lib::timed(|| part1(&points, start, end)));
         println!("Part 2: {}", aoc_lib::timed(|| part2(&points, end)));
     });
 }

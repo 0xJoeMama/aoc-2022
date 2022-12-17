@@ -48,7 +48,7 @@ fn main() {
 // allow me to explain:
 // vector magic in this case allows this case to **not** follow the rules of the game
 // specifically, for 1 tail we know that it will only move in the same column as the head, thus we can conclude this:
-// suppose the head is at position (xh, yh) and the tail at (xt, yt) 
+// suppose the head is at position (xh, yh) and the tail at (xt, yt)
 // the head is moved by a unit vector in one direction that is always coordinal, thus the new head position either:
 // (xh + 1, yh) or (xh - 1, yh) or (xh, yh + 1) or (xh, yh - 1), or more generalized (xh + dx, yh + dy) where either dx or dy is 0
 //                                A
