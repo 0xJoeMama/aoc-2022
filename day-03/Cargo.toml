@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 aoc-lib = { workspace = true }
+aoc-codegen = { workspace = true }

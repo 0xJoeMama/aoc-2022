@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 
-use aoc_lib::input;
+use aoc_codegen::day;
 
 fn calculate_score<T>(dups: T) -> i32
 where
@@ -15,19 +15,11 @@ where
     })
 }
 
-fn main() {
-    let _ = input::apply("input-day-03.txt", |file| {
-        aoc_lib::timed(|| {
-            let res: Vec<&str> = file.lines().filter(|l| !l.is_empty()).collect();
-            aoc_lib::timed(|| {
-                println!("{}", part1(&res));
-            });
+#[day(3, parser = parser, part1 = part1, part2 = part2)]
+const DAY: u8 = 3;
 
-            aoc_lib::timed(|| {
-                println!("{}", part2(&res));
-            });
-        });
-    });
+fn parser(input: &str) -> Vec<&str> {
+    input.lines().filter(|l| !l.is_empty()).collect()
 }
 
 fn part1(input: &[&str]) -> i32 {
@@ -41,7 +33,7 @@ fn part1(input: &[&str]) -> i32 {
         .sum()
 }
 
-fn part2(input: &Vec<&str>) -> i32 {
+fn part2(input: &[&str]) -> i32 {
     let mut badges = Vec::with_capacity(input.len() / 3);
 
     for i in 0..input.len() / 3 {

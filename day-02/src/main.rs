@@ -1,4 +1,7 @@
-use aoc_lib::input;
+use aoc_codegen::day;
+
+#[day(2, parser = parser, part1 = part1, part2 = part2)]
+const DAY: u8 = 2;
 
 #[derive(PartialEq, Clone)]
 #[repr(u8)]
@@ -44,35 +47,26 @@ fn calculate_points(his: &State, mine: State) -> i32 {
     } + mine.get_score())
 }
 
-fn main() {
-    let _ = input::apply("input-day-02.txt", |input| {
-        aoc_lib::timed(|| {
-            let input = aoc_lib::timed(|| {
-                input
-                    .lines()
-                    .filter(|s| !s.is_empty())
-                    .map(|line| {
-                        let (his, mine) = line.split_at(1);
-                        let his = match his {
-                            "A" => State::Rock,
-                            "B" => State::Paper,
-                            "C" => State::Scissors,
-                            _ => unreachable!("invalid input"),
-                        };
+fn parser(input: &str) -> Vec<(State, &str)> {
+    input
+        .lines()
+        .filter(|s| !s.is_empty())
+        .map(|line| {
+            let (his, mine) = line.split_at(1);
+            let his = match his {
+                "A" => State::Rock,
+                "B" => State::Paper,
+                "C" => State::Scissors,
+                _ => unreachable!("invalid input"),
+            };
 
-                        (his, mine.trim_start())
-                    })
-                    .collect::<Vec<_>>()
-            });
-
-            aoc_lib::timed(|| part1(&input));
-            aoc_lib::timed(|| part2(&input));
-        });
-    });
+            (his, mine.trim_start())
+        })
+        .collect::<Vec<_>>()
 }
 
-fn part1(input: &[(State, &str)]) {
-    let res = input
+fn part1(input: &[(State, &str)]) -> i32 {
+    input
         .iter()
         .map(|pair| {
             let mine = match pair.1 {
@@ -83,12 +77,11 @@ fn part1(input: &[(State, &str)]) {
             };
             calculate_points(&pair.0, mine)
         })
-        .sum::<i32>();
-    println!("{res}");
+        .sum::<i32>()
 }
 
-fn part2(input: &[(State, &str)]) {
-    let res = input
+fn part2(input: &[(State, &str)]) -> i32 {
+    input
         .iter()
         .map(|pair| {
             let mine = match pair.1 {
@@ -99,6 +92,5 @@ fn part2(input: &[(State, &str)]) {
             };
             calculate_points(&pair.0, mine)
         })
-        .sum::<i32>();
-    println!("{res}");
+        .sum::<i32>()
 }

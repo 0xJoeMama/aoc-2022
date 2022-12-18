@@ -1,13 +1,9 @@
-use aoc_lib::input;
+use aoc_codegen::day;
 
-fn main() {
-    let _ = input::apply("input-day-01.txt", |f| {
-        println!("{}", run_part1(f));
-        println!("{}", run_part2(f));
-    });
-}
+#[day(1, part1 = part1, part2 = part2)]
+const DAY: u8 = 1;
 
-fn run_part1(input: &str) -> i32 {
+fn part1(input: &str) -> i32 {
     input
         .split("\n\n")
         .map(|three| {
@@ -20,7 +16,7 @@ fn run_part1(input: &str) -> i32 {
         .unwrap_or(-1)
 }
 
-fn run_part2(input: &str) -> i32 {
+fn part2(input: &str) -> i32 {
     let mut calories = input
         .split("\n\n")
         .map(|three| {

@@ -1,22 +1,19 @@
-use aoc_lib::input;
+use aoc_codegen::day;
 use aoc_lib::range::NumberRange;
 
-fn main() {
-    let _ = input::apply("input-day-04.txt", |f| {
-        aoc_lib::timed(|| {
-            let input = f
-                .lines()
-                .filter(|s| !s.is_empty())
-                .map(|s| {
-                    s.split(',')
-                        .map(|pair| pair.parse().unwrap())
-                        .collect::<(NumberRange, NumberRange)>()
-                })
-                .collect::<Vec<_>>();
-            aoc_lib::timed(|| println!("{}", part1(&input)));
-            aoc_lib::timed(|| println!("{}", part2(&input)));
-        });
-    });
+#[day(4, parser = parser, part1 = part1, part2 = part2)]
+const DAY: u8 = 4;
+
+fn parser(input: &str) -> Vec<(NumberRange, NumberRange)> {
+    input
+        .lines()
+        .filter(|s| !s.is_empty())
+        .map(|s| {
+            s.split(',')
+                .map(|pair| pair.parse().unwrap())
+                .collect::<(NumberRange, NumberRange)>()
+        })
+        .collect::<Vec<_>>()
 }
 
 fn part1(input: &[(NumberRange, NumberRange)]) -> usize {

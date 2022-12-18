@@ -1,6 +1,8 @@
 [workspace]
 members = [
   "aoc-lib",
+  "aoc-codegen",
+  "aoc-codegen/aoc-codegen-test",
   "day-01",
   "day-02",
   "day-03",
@@ -19,3 +21,4 @@ members = [
 
 [workspace.dependencies]
 aoc-lib = { path = "aoc-lib" }
+aoc-codegen = { path = "aoc-codegen" }
