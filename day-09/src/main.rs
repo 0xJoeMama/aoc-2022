@@ -1,9 +1,12 @@
+use aoc_codegen::day;
 use aoc_lib::point::Point;
 use std::collections::HashSet;
 use std::str::FromStr;
 
-use aoc_lib::input;
 use aoc_lib::point::Direction;
+
+#[day(9, parser = parser, part1 = part1, part2 = part2)]
+const DAY: u8 = 9;
 
 #[derive(Debug)]
 struct Move {
@@ -31,18 +34,8 @@ impl FromStr for Move {
     }
 }
 
-fn main() {
-    _ = input::apply("input-day-09.txt", |f| {
-        let moves = f
-            .lines()
-            .map(|l| l.parse::<Move>().unwrap())
-            .collect::<Vec<_>>();
-
-        aoc_lib::timed(|| {
-            aoc_lib::timed(|| println!("{}", part1(&moves)));
-            aoc_lib::timed(|| println!("{}", part2(&moves)));
-        });
-    });
+fn parser(input: &str) -> Vec<Move> {
+    input.lines().map(|l| l.parse::<Move>().unwrap()).collect()
 }
 
 // allow me to explain:

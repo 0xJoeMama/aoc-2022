@@ -1,34 +1,27 @@
 use std::collections::HashMap;
 
-use aoc_lib::{
-    input,
-    point::{Direction, Point},
-};
+use aoc_codegen::day;
+use aoc_lib::point::{Direction, Point};
 
-// this solution is a bit weird because I forgot how I was planning on solving the problem, midway through.
+#[day(8, parser = parser, part1 = part1, part2 = part2)]
+const DAY: u8 = 8;
 
-fn main() {
-    let _ = input::apply("input-day-08.txt", |input| {
-        aoc_lib::timed(|| {
-            let trees = input
-                .lines()
-                .enumerate()
-                .flat_map(|(x, line)| {
-                    line.chars().enumerate().map(move |(y, height)| {
-                        (
-                            Point::new(x as i64, y as i64, 0),
-                            height.to_digit(10).unwrap(),
-                        )
-                    })
-                })
-                .collect::<HashMap<_, _>>();
-
-            println!("{}", aoc_lib::timed(|| part1(&trees)));
-            println!("{}", aoc_lib::timed(|| part2(&trees)));
-        });
-    });
+fn parser(input: &str) -> HashMap<Point, u32> {
+    input
+        .lines()
+        .enumerate()
+        .flat_map(|(x, line)| {
+            line.chars().enumerate().map(move |(y, height)| {
+                (
+                    Point::new(x as i64, y as i64, 0),
+                    height.to_digit(10).unwrap(),
+                )
+            })
+        })
+        .collect()
 }
 
+// this solution is a bit weird because I forgot how I was planning on solving the problem, midway through.
 fn part1(trees: &HashMap<Point, u32>) -> usize {
     trees
         .iter()

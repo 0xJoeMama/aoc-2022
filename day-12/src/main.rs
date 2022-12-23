@@ -1,9 +1,10 @@
 use std::collections::{HashMap, HashSet, VecDeque};
 
-use aoc_lib::{
-    input,
-    point::Point,
-};
+use aoc_codegen::day;
+use aoc_lib::point::Point;
+
+#[day(12, parser = parser, part1 = part1, part2 = part2)]
+const DAY: u8 = 12;
 
 fn can_visit(start: char, end: char) -> bool {
     fn normalize(c: char) -> u8 {
@@ -55,35 +56,32 @@ fn bfs(start: &Point, end: &Point, map: &HashMap<Point, char>) -> Option<usize> 
     Some(path_sz)
 }
 
-fn main() {
-    _ = input::apply("input-day-12.txt", |input| {
-        let points: HashMap<Point, char> = input
-            .lines()
-            .enumerate()
-            .flat_map(|(i, line)| {
-                line.chars()
-                    .enumerate()
-                    .map(move |(j, c)| (Point::new(i as i64, j as i64, 0), c))
-            })
-            .collect();
+fn parser(input: &str) -> (HashMap<Point, char>, Point) {
+    let points: HashMap<Point, char> = input
+        .lines()
+        .enumerate()
+        .flat_map(|(i, line)| {
+            line.chars()
+                .enumerate()
+                .map(move |(j, c)| (Point::new(i as i64, j as i64, 0), c))
+        })
+        .collect();
+    let end = *points.iter().find(|(_, c)| **c == 'E').unwrap().0;
 
-        let start = points.iter().find(|(_, c)| **c == 'S').unwrap().0;
-        let end = points.iter().find(|(_, c)| **c == 'E').unwrap().0;
-
-        println!("Part 1: {}", aoc_lib::timed(|| part1(&points, start, end)));
-        println!("Part 2: {}", aoc_lib::timed(|| part2(&points, end)));
-    });
+    (points, end)
 }
 
-fn part1(points: &HashMap<Point, char>, start: &Point, end: &Point) -> usize {
-    bfs(start, end, points).unwrap()
+fn part1(input: &(HashMap<Point, char>, Point)) -> usize {
+    let (map, end) = input;
+    let start = map.iter().find(|(_, c)| **c == 'S').unwrap().0;
+    bfs(start, end, map).unwrap()
 }
 
-fn part2(points: &HashMap<Point, char>, end: &Point) -> usize {
-    points
-        .iter()
+fn part2(input: &(HashMap<Point, char>, Point)) -> usize {
+    let (map, end) = input;
+    map.iter()
         .filter(|(_, c)| **c == 'a' || **c == 'S')
-        .filter_map(|(p, _)| bfs(p, end, points))
+        .filter_map(|(p, _)| bfs(p, end, map))
         .min()
         .unwrap()
 }

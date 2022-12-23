@@ -1,13 +1,10 @@
-use aoc_lib::input;
+use aoc_codegen::day;
 
-fn main() {
-    let _ = input::apply("input-day-06.txt", |input| {
-        aoc_lib::timed(|| {
-            let input = input.lines().collect::<String>();
-            aoc_lib::timed(|| println!("{}", part1(&input)));
-            aoc_lib::timed(|| println!("{}", part2(&input)));
-        });
-    });
+#[day(6, parser = parser, part1 = part1, part2 = part2)]
+const DAY: u8 = 6;
+
+fn parser(input: &str) -> String {
+    input.lines().collect()
 }
 
 fn is_pure(s: &[u8]) -> bool {

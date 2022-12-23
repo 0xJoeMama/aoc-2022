@@ -1,6 +1,9 @@
 use std::{collections::VecDeque, str::FromStr};
 
-use aoc_lib::input;
+use aoc_codegen::day;
+
+#[day(11, parser = parser, part1 = part1, part2 = part2)]
+const DAY: u8 = 11;
 
 #[derive(Debug, Clone)]
 enum Op {
@@ -30,7 +33,7 @@ impl FromStr for Monkey {
             .split_once(':')
             .unwrap()
             .1
-            .split(", ")
+            .split(',')
             .filter_map(|s| s.trim().parse().ok())
             .collect();
 
@@ -128,33 +131,27 @@ impl Monkey {
     }
 }
 
-fn main() {
-    _ = input::apply("input-day-11.txt", |input| {
-        let monkeys = input
-            .split("\n\n")
-            .map(|chunk| chunk.parse::<Monkey>().unwrap())
-            .collect::<Vec<_>>();
+fn parser(input: &str) -> (Vec<Monkey>, i64) {
+    let monkeys = input
+        .split("\n\n")
+        .map(|chunk| chunk.parse::<Monkey>().unwrap())
+        .collect::<Vec<_>>();
 
-        let magic = monkeys.iter().map(|m| m.test.0).fold(1, |acc, divisor| {
-            if acc % divisor == 0 {
-                acc
-            } else {
-                acc * divisor
-            }
-        });
-
-        println!(
-            "Part 1: {}",
-            aoc_lib::timed(|| part1(monkeys.clone(), magic))
-        );
-        println!(
-            "Part 2: {}",
-            aoc_lib::timed(|| part2(monkeys.clone(), magic))
-        );
+    let magic = monkeys.iter().map(|m| m.test.0).fold(1, |acc, divisor| {
+        if acc % divisor == 0 {
+            acc
+        } else {
+            acc * divisor
+        }
     });
+
+    (monkeys, magic)
 }
 
-fn part1(mut monkeys: Vec<Monkey>, magic: i64) -> usize {
+fn part1(input: &(Vec<Monkey>, i64)) -> usize {
+    let mut monkeys = input.0.clone();
+    let magic = input.1;
+
     let mut modifications = Vec::with_capacity(monkeys.len());
     for _ in 0..monkeys.len() {
         modifications.push(Vec::new());
@@ -180,7 +177,10 @@ fn part1(mut monkeys: Vec<Monkey>, magic: i64) -> usize {
         .product()
 }
 
-fn part2(mut monkeys: Vec<Monkey>, magic: i64) -> usize {
+fn part2(input: &(Vec<Monkey>, i64)) -> usize {
+    let mut monkeys = input.0.clone();
+    let magic = input.1;
+
     let mut modifications = Vec::with_capacity(monkeys.len());
 
     for _ in 0..monkeys.len() {

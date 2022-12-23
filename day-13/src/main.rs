@@ -1,6 +1,9 @@
-use aoc_lib::input;
+use aoc_codegen::day;
 use core::str::FromStr;
 use std::cmp::Ordering;
+
+#[day(13, parser = parser, part1 = part1, part2 = part2)]
+const DAY: u8 = 13;
 
 #[derive(Debug, Eq, PartialEq, Clone)]
 enum PacketValue {
@@ -91,23 +94,16 @@ impl FromStr for PacketValue {
     }
 }
 
-fn main() {
-    _ = input::apply("input-day-13.txt", |input| {
-        aoc_lib::timed(|| {
-            let input = input
-                .lines()
-                .filter(|s| !s.is_empty())
-                .flat_map(|packet| packet.parse::<PacketValue>())
-                .collect::<Vec<_>>();
-
-            println!("Part 1: {}", aoc_lib::timed(|| part1(&input)));
-            println!("Part 2: {}", aoc_lib::timed(|| part2(input)));
-        })
-    });
+fn parser(input: &str) -> Vec<PacketValue> {
+    input
+        .lines()
+        .filter(|s| !s.is_empty())
+        .flat_map(|packet| packet.parse::<PacketValue>())
+        .collect()
 }
 
-fn part1(input: &[PacketValue]) -> usize {
-    input
+fn part1(packets: &[PacketValue]) -> usize {
+    packets
         .chunks(2)
         .enumerate()
         .filter(|(_, packets)| packets[0] < packets[1])
@@ -115,7 +111,9 @@ fn part1(input: &[PacketValue]) -> usize {
         .sum()
 }
 
-fn part2(mut packets: Vec<PacketValue>) -> usize {
+fn part2(packets: &[PacketValue]) -> usize {
+    let mut packets = Vec::from(packets);
+
     let div1 = PacketValue::List(vec![PacketValue::Number(6)]);
     let div2 = PacketValue::List(vec![PacketValue::Number(2)]);
 

@@ -158,6 +158,10 @@ impl Point {
         (self.x - other.x).pow(2) + (self.y - other.y).pow(2) + (self.z - other.z).pow(2)
     }
 
+    pub fn manhattan_distance(&self, other: &Point) -> u64 {
+        ((self.x - other.x).abs() + (self.y - other.y).abs() + (self.z - other.z).abs()) as u64
+    }
+
     pub fn plane_neighbors(&self) -> PlaneNeighbours<'_> {
         PlaneNeighbours::new(self)
     }
@@ -216,7 +220,7 @@ impl PointsBetween {
         Self {
             current: start,
             end: end + step,
-            step, 
+            step,
             done: false,
         }
     }

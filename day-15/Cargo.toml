@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 aoc-codegen = { workspace = true }
 aoc-lib = { workspace = true }
+regex = "*"
+lazy_static = "*"

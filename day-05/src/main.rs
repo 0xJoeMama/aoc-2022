@@ -1,6 +1,9 @@
 use std::{num::ParseIntError, str::FromStr};
 
-use aoc_lib::input;
+use aoc_codegen::day;
+
+#[day(5, parser = parser, part1 = part1, part2 = part2)]
+const DAY: u8 = 5;
 
 #[derive(Debug)]
 struct Move {
@@ -28,33 +31,31 @@ impl FromStr for Move {
     }
 }
 
-fn main() {
-    let _ = input::apply("input-day-05.txt", |f| {
-        aoc_lib::timed(|| {
-            let (init, moves) = f.split_once("\n\n").unwrap();
-            let stacks_cnt = init.lines().last().unwrap().split_whitespace().count();
-            let mut stacks: Vec<Vec<char>> = vec![Vec::new(); stacks_cnt];
+fn parser(input: &str) -> (Vec<Vec<char>>, Vec<Move>) {
+    let (init, moves) = input.split_once("\n\n").unwrap();
+    let stacks_cnt = init.lines().last().unwrap().split_whitespace().count();
+    let mut stacks: Vec<Vec<char>> = vec![Vec::new(); stacks_cnt];
 
-            for line in init.lines().rev().skip(1) {
-                for (i, stack) in stacks.iter_mut().enumerate() {
-                    let package = line.chars().nth(4 * i + 1).unwrap();
+    for line in init.lines().rev().skip(1) {
+        for (i, stack) in stacks.iter_mut().enumerate() {
+            let package = line.chars().nth(4 * i + 1).unwrap();
 
-                    if !package.is_whitespace() {
-                        stack.push(package);
-                    }
-                }
+            if !package.is_whitespace() {
+                stack.push(package);
             }
+        }
+    }
 
-            let moves = moves.lines().flat_map(|l| l.parse::<Move>()).collect();
-
-            aoc_lib::timed(|| println!("{}", part1(stacks.clone(), &moves)));
-            aoc_lib::timed(|| println!("{}", part2(stacks, &moves)));
-        });
-    });
+    (
+        stacks,
+        moves.lines().flat_map(|l| l.parse::<Move>()).collect(),
+    )
 }
 
-fn part1(mut stacks: Vec<Vec<char>>, moves: &Vec<Move>) -> String {
-    for mov in moves {
+fn part1(input: &(Vec<Vec<char>>, Vec<Move>)) -> String {
+    let mut stacks = input.0.clone();
+
+    for mov in input.1.iter() {
         let from = &mut stacks[mov.from];
         let moved = from.split_off(from.len() - mov.cnt);
         let to = &mut stacks[mov.to];
@@ -65,8 +66,10 @@ fn part1(mut stacks: Vec<Vec<char>>, moves: &Vec<Move>) -> String {
     stacks.iter().filter_map(|v| v.last()).collect::<String>()
 }
 
-fn part2(mut stacks: Vec<Vec<char>>, moves: &Vec<Move>) -> String {
-    for mov in moves {
+fn part2(input: &(Vec<Vec<char>>, Vec<Move>)) -> String {
+    let mut stacks = input.0.clone();
+
+    for mov in input.1.iter() {
         let from = &mut stacks[mov.from];
         let moved = from.split_off(from.len() - mov.cnt);
         let to = &mut stacks[mov.to];

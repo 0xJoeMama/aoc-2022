@@ -16,14 +16,14 @@ fn parser(input: &str) -> Vec<(NumberRange, NumberRange)> {
         .collect::<Vec<_>>()
 }
 
-fn part1(input: &Vec<(NumberRange, NumberRange)>) -> usize {
+fn part1(input: &[(NumberRange, NumberRange)]) -> usize {
     input
         .iter()
         .filter(|(first, second)| first.subrange(second) || second.subrange(first))
         .count()
 }
 
-fn part2(input: &Vec<(NumberRange, NumberRange)>) -> usize {
+fn part2(input: &[(NumberRange, NumberRange)]) -> usize {
     input
         .iter()
         .filter(|(first, second)| first.overlaps(second) || second.overlaps(first))

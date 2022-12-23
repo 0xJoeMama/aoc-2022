@@ -1,6 +1,9 @@
 use std::collections::HashMap;
 
-use aoc_lib::input;
+use aoc_codegen::day;
+
+#[day(7, parser = parser, part1 = part1, part2 = part2)]
+const DAY: u8 = 7;
 
 #[derive(Debug)]
 struct Dir {
@@ -46,56 +49,50 @@ impl Dir {
     }
 }
 
-fn main() {
-    let _ = input::apply("input-day-07.txt", |input| {
-        aoc_lib::timed(|| {
-            let mut folders: HashMap<String, Dir> = HashMap::new();
-            let mut folder_stack: Vec<String> = Vec::new();
-            folders.insert("/".to_string(), Dir::new());
-            folder_stack.push("/".to_string());
+fn parser(input: &str) -> HashMap<String, Dir> {
+    let mut folders: HashMap<String, Dir> = HashMap::new();
+    let mut folder_stack: Vec<String> = Vec::new();
+    folders.insert("/".to_string(), Dir::new());
+    folder_stack.push("/".to_string());
 
-            for line in input.lines() {
-                let mut line = line.split_whitespace();
-                let first = line.next().unwrap();
-                if first == "$" {
-                    if line.next().unwrap() == "cd" {
-                        let target = line.next().unwrap();
-                        match target {
-                            ".." => {
-                                folder_stack.pop();
-                            }
-                            target_name => {
-                                let last = folder_stack.last().unwrap();
-
-                                let target_name = last.to_string() + "/" + target_name;
-                                if !folders.contains_key(target_name.as_str()) {
-                                    folders.insert(target_name.clone(), Dir::new());
-                                }
-
-                                if let Some(last) = folders.get_mut(last) {
-                                    last.children.push(target_name.clone());
-                                }
-
-                                folder_stack.push(target_name);
-                            }
-                        }
+    for line in input.lines() {
+        let mut line = line.split_whitespace();
+        let first = line.next().unwrap();
+        if first == "$" {
+            if line.next().unwrap() == "cd" {
+                let target = line.next().unwrap();
+                match target {
+                    ".." => {
+                        folder_stack.pop();
                     }
-                } else {
-                    match first {
-                        "dir" => {}
-                        nomber => {
-                            let curr_dir = folder_stack.last().unwrap();
-                            folders.get_mut(curr_dir).unwrap().size +=
-                                nomber.parse::<usize>().unwrap();
+                    target_name => {
+                        let last = folder_stack.last().unwrap();
+
+                        let target_name = last.to_string() + "/" + target_name;
+                        if !folders.contains_key(target_name.as_str()) {
+                            folders.insert(target_name.clone(), Dir::new());
                         }
+
+                        if let Some(last) = folders.get_mut(last) {
+                            last.children.push(target_name.clone());
+                        }
+
+                        folder_stack.push(target_name);
                     }
                 }
             }
+        } else {
+            match first {
+                "dir" => {}
+                number => {
+                    let curr_dir = folder_stack.last().unwrap();
+                    folders.get_mut(curr_dir).unwrap().size += number.parse::<usize>().unwrap();
+                }
+            }
+        }
+    }
 
-            aoc_lib::timed(|| println!("{}", part1(&folders)));
-            aoc_lib::timed(|| println!("{}", part2(&folders)));
-        });
-    });
+    folders
 }
 
 fn part1(folders: &HashMap<String, Dir>) -> usize {

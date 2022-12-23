@@ -14,12 +14,12 @@ fn parser(input: &str) -> (i64, HashSet<Point>) {
         let mut start_p: Point = iter
             .next()
             .unwrap()
-            .split(",")
+            .split(',')
             .flat_map(str::parse)
             .collect();
 
         for curr_p in iter {
-            let curr_p = curr_p.split(",").flat_map(str::parse).collect::<Point>();
+            let curr_p = curr_p.split(',').flat_map(str::parse).collect::<Point>();
             for p in start_p.points_between(&curr_p) {
                 if p.y > highest_y {
                     highest_y = p.y;
@@ -62,7 +62,7 @@ fn part1(input: &(i64, HashSet<Point>)) -> usize {
     let starting = locations.len();
 
     loop {
-        let mut curr = SOURCE.clone();
+        let mut curr = SOURCE;
 
         loop {
             if curr.y > highest_y {
@@ -84,7 +84,7 @@ fn part2(input: &(i64, HashSet<Point>)) -> usize {
     let starting = locations.len();
 
     loop {
-        let mut curr = SOURCE.clone();
+        let mut curr = SOURCE;
 
         loop {
             if curr.y == highest_y + 1 {
