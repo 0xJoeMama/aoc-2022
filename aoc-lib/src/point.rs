@@ -162,7 +162,7 @@ impl Point {
         PlaneNeighbours::new(self)
     }
 
-    pub fn points_between(&self, other: &Point) -> PointsBetween<'_> {
+    pub fn points_between(&self, other: &Point) -> PointsBetween {
         PointsBetween::new(*self, *other)
     }
 
@@ -203,15 +203,14 @@ impl Point {
     }
 }
 
-pub struct PointsBetween<'a> {
+pub struct PointsBetween {
     current: Point,
     end: Point,
     step: Point,
     done: bool,
-    _phantom: PhantomData<&'a Point>, // lmao cool hack
 }
 
-impl PointsBetween<'_> {
+impl PointsBetween {
     pub fn new(start: Point, end: Point) -> Self {
         let step = (end - start).normalized();
         Self {
@@ -219,12 +218,11 @@ impl PointsBetween<'_> {
             end: end + step,
             step, 
             done: false,
-            _phantom: PhantomData,
         }
     }
 }
 
-impl<'a> Iterator for PointsBetween<'a> {
+impl Iterator for PointsBetween {
     type Item = Point;
 
     fn next(&mut self) -> Option<Self::Item> {
@@ -249,7 +247,7 @@ pub struct PlaneNeighbours<'a> {
     _phantom: PhantomData<&'a Point>,
 }
 
-impl<'a> PlaneNeighbours<'a> {
+impl PlaneNeighbours<'_> {
     fn new(p: &Point) -> PlaneNeighbours<'_> {
         PlaneNeighbours {
             p,
@@ -259,7 +257,7 @@ impl<'a> PlaneNeighbours<'a> {
     }
 }
 
-impl<'a> Iterator for PlaneNeighbours<'a> {
+impl Iterator for PlaneNeighbours<'_> {
     type Item = Point;
 
     fn next(&mut self) -> Option<Self::Item> {
