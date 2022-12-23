@@ -3,7 +3,7 @@ use aoc_codegen::day;
 #[day(1, part1 = part1, part2 = part2)]
 const DAY: u8 = 1;
 
-fn part1(input: &str) -> i32 {
+fn part1(input: &&String) -> i32 {
     input
         .split("\n\n")
         .map(|three| {
@@ -13,10 +13,10 @@ fn part1(input: &str) -> i32 {
                 .sum::<i32>()
         })
         .max()
-        .unwrap_or(-1)
+        .unwrap()
 }
 
-fn part2(input: &str) -> i32 {
+fn part2(input: &&String) -> i32 {
     let mut calories = input
         .split("\n\n")
         .map(|three| {

@@ -66,10 +66,13 @@ pub fn day(attr: TokenStream, _item: TokenStream) -> TokenStream {
 
     quote! {
         fn main() {
+            use std::borrow::Cow;
+
             println!("Running Advent of Code Day {}", #day);
             _ = aoc_lib::input::apply(&format!("input-day-{:02}.txt", #day), |input| {
                 aoc_lib::timed(|| {
                     let input = #parser(&input);
+                    let input = Cow::Owned(input);
                     aoc_lib::timed(|| println!("Part 1: {}", #part1(&input)));
                     aoc_lib::timed(|| println!("Part 2: {}", #part2(&input)));
                 });
