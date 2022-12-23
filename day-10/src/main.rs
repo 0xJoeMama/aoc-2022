@@ -92,7 +92,7 @@ impl<'a> Pc<'a> {
     }
 }
 
-fn solve(input: &str) -> i64 {
+fn solve(input: String) -> i64 {
     let mut sum = 0;
     let mut pc = Pc::new(input.lines());
 

@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct NumberRange {
     min: i32,
     max: i32,
