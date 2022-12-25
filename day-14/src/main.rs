@@ -20,7 +20,7 @@ fn parser(input: &str) -> (i64, HashSet<Point>) {
 
         for curr_p in iter {
             let curr_p = curr_p.split(',').flat_map(str::parse).collect::<Point>();
-            for p in start_p.points_between(&curr_p) {
+            for p in start_p.points_between(&curr_p).into_iter().flatten() {
                 if p.y > highest_y {
                     highest_y = p.y;
                 }

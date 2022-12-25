@@ -141,6 +141,7 @@ impl Point {
     const I: Point = Point { x: 1, y: 0, z: 0 };
     const J: Point = Point { x: 0, y: 1, z: 0 };
     const K: Point = Point { x: 0, y: 0, z: 1 };
+    const ZERO: Point = Point { x: 0, y: 0, z: 0 };
 
     pub fn origin() -> &'static Self {
         &Self::ORIGIN
@@ -151,6 +152,10 @@ impl Point {
     }
 
     pub fn normalized(&self) -> Point {
+        if *self == Self::ZERO {
+            panic!("Normalizing zero vector");
+        }
+
         *self / (self.len_squared() as f64).sqrt() as i64
     }
 
@@ -166,7 +171,7 @@ impl Point {
         PlaneNeighbours::new(self)
     }
 
-    pub fn points_between(&self, other: &Point) -> PointsBetween {
+    pub fn points_between(&self, other: &Point) -> Option<PointsBetween> {
         PointsBetween::new(*self, *other)
     }
 
@@ -215,14 +220,18 @@ pub struct PointsBetween {
 }
 
 impl PointsBetween {
-    pub fn new(start: Point, end: Point) -> Self {
+    pub fn new(start: Point, end: Point) -> Option<PointsBetween> {
+        if end == start {
+            return None;
+        }
+
         let step = (end - start).normalized();
-        Self {
+        Some(Self {
             current: start,
             end: end + step,
             step,
             done: false,
-        }
+        })
     }
 }
 
