@@ -1,4 +1,4 @@
-use std::{collections::VecDeque, str::FromStr};
+use std::{collections::VecDeque, convert::Infallible, str::FromStr};
 
 use aoc_codegen::day;
 
@@ -21,7 +21,7 @@ struct Monkey {
 }
 
 impl FromStr for Monkey {
-    type Err = ();
+    type Err = Infallible;
 
     fn from_str(s: &str) -> Result<Monkey, Self::Err> {
         let mut lines = s.lines();

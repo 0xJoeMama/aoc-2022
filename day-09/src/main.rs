@@ -1,6 +1,7 @@
 use aoc_codegen::day;
 use aoc_lib::point::Point;
 use std::collections::HashSet;
+use std::convert::Infallible;
 use std::str::FromStr;
 
 use aoc_lib::point::Direction;
@@ -15,7 +16,7 @@ struct Move {
 }
 
 impl FromStr for Move {
-    type Err = ();
+    type Err = Infallible;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let (dir, count) = s.split_once(' ').unwrap();

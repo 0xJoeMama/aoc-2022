@@ -8,7 +8,7 @@ macro_rules! regex_parse {
             static ref RE: Regex = Regex::new($re).unwrap();
         }
 
-        let captures = RE.captures($test).expect(format!("String {} does not match regex!", $test).as_str());
+        let captures = RE.captures($test).expect(format!(r#"String "{}" does not match regex!"#, $test).as_str());
 
         let mut iter = captures.iter();
         iter.next();
@@ -84,7 +84,7 @@ Position: x=-1123, y=09123: Ends at 0";
     }
 
     #[test]
-    #[should_panic(expected = "String 1?-2 does not match regex!")]
+    #[should_panic(expected = r#"String "1?-2" does not match regex!"#)]
     fn should_fail2() {
         regex_parse!(r"(\d+)-(\d+)"; "1?-2" => _a);
     }

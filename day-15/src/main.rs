@@ -4,6 +4,7 @@ use aoc_lib::{
     range::{NumberRange, Relative},
 };
 use core::str::FromStr;
+use std::convert::Infallible;
 
 #[day(15, parser = parser, part1 = part1, part2 = part2)]
 const DAY: u8 = 15;
@@ -14,7 +15,7 @@ struct Sensor {
 }
 
 impl FromStr for Sensor {
-    type Err = ();
+    type Err = Infallible;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         aoc_lib::regex_parse! {
@@ -79,11 +80,11 @@ fn find_line_poses(sensors: &[Sensor], target_y: i64) -> Vec<NumberRange<i64>> {
     merged
 }
 
-fn part1(input: &[Sensor]) -> usize {
+fn part1(input: &[Sensor]) -> u64 {
     find_line_poses(input, TARGET_Y)
         .iter()
-        .map(|r| r.get_span().abs() as usize)
-        .sum::<usize>()
+        .map(|r| r.get_span().unsigned_abs())
+        .sum()
 }
 
 const MAX_COORD: i64 = 4_000_000;
@@ -92,8 +93,7 @@ fn part2(input: &[Sensor]) -> i64 {
     let beacon = (0..=MAX_COORD)
         .map(|y| find_line_poses(input, y))
         .enumerate()
-        .filter(|(_, r)| r.len() > 1)
-        .next()
+        .find(|(_, r)| r.len() > 1)
         .map(|(y, ranges)| Point::new(ranges.first().unwrap().get_max() + 1, y as i64, 0))
         .unwrap();
 

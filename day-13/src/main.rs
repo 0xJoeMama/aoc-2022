@@ -1,6 +1,6 @@
 use aoc_codegen::day;
 use core::str::FromStr;
-use std::cmp::Ordering;
+use std::{cmp::Ordering, convert::Infallible};
 
 #[day(13, parser = parser, part1 = part1, part2 = part2)]
 const DAY: u8 = 13;
@@ -87,7 +87,7 @@ impl PacketValue {
 }
 
 impl FromStr for PacketValue {
-    type Err = ();
+    type Err = Infallible;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(Self::parse_list(&mut s.chars().skip(1)))

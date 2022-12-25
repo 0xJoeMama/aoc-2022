@@ -1,4 +1,4 @@
-use std::{num::ParseIntError, str::FromStr};
+use std::{str::FromStr, convert::Infallible};
 
 use aoc_codegen::day;
 
@@ -13,16 +13,16 @@ struct Move {
 }
 
 impl FromStr for Move {
-    type Err = ParseIntError;
+    type Err = Infallible;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut iter = s.split_whitespace();
         let _ = iter.next();
-        let cnt: usize = iter.next().unwrap().parse()?;
+        let cnt: usize = iter.next().unwrap().parse().unwrap();
         let _ = iter.next();
-        let from: usize = iter.next().unwrap().parse()?;
+        let from: usize = iter.next().unwrap().parse().unwrap();
         let _ = iter.next();
-        let to: usize = iter.next().unwrap().parse()?;
+        let to: usize = iter.next().unwrap().parse().unwrap();
         Ok(Move {
             cnt,
             from: from - 1,

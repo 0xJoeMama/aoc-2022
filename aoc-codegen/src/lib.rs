@@ -1,9 +1,8 @@
 use proc_macro::TokenStream;
-use quote::quote;
 use std::collections::HashMap;
 use syn::{
     parse::{Parse, ParseStream},
-    parse_macro_input, Ident, LitInt, Token,
+    Ident, LitInt, Token,
 };
 
 struct Args {
@@ -58,13 +57,13 @@ impl Parse for Args {
 
 #[proc_macro_attribute]
 pub fn day(attr: TokenStream, _item: TokenStream) -> TokenStream {
-    let args = parse_macro_input!(attr as Args);
+    let args = syn::parse_macro_input!(attr as Args);
     let day: u8 = args.day.base10_parse().unwrap();
     let parser = args.parser;
     let part1 = args.part1;
     let part2 = args.part2;
 
-    quote! {
+    quote::quote! {
         fn main() {
             println!("Running Advent of Code Day {}", #day);
             _ = aoc_lib::input::apply(&format!("input-day-{:02}.txt", #day), |input| {

@@ -1,11 +1,11 @@
 use std::time::Instant;
 
+pub mod bitset;
+pub mod either;
 pub mod input;
 pub mod parse;
 pub mod point;
 pub mod range;
-
-pub mod either;
 
 pub fn timed<T>(f: impl FnOnce() -> T) -> T {
     let timer = Instant::now();
