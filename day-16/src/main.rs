@@ -25,7 +25,7 @@ impl FromStr for Graph {
         let nodes: Vec<(Node, Vec<String>)> = s
         .lines()
         .map(|line| {
-            aoc_lib::regex_parse! {
+            aoc_lib::regex_parser! {
                 "Valve ([A-Z]{2}) has flow rate=([0-9]+); tunnels? leads? to valves? ((?:[A-Z]{2},? ?)+)";
                 line => name, pressure, children
             }

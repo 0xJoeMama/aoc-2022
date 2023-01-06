@@ -1,5 +1,5 @@
 #[macro_export]
-macro_rules! regex_parse {
+macro_rules! regex_parser {
     ($re:expr; $test:expr => $($match:ident),+) => {
         use lazy_static::lazy_static;
         use regex::Regex;
@@ -22,14 +22,14 @@ macro_rules! regex_parse {
 mod test {
     #[test]
     fn digit_regex() {
-        regex_parse!(r"(\d+)-(\d+)"; "1-2" => a, b);
+        regex_parser!(r"(\d+)-(\d+)"; "1-2" => a, b);
         assert_eq!(a, "1");
         assert_eq!(b, "2");
     }
 
     #[test]
     fn word_regex() {
-        regex_parse!(r"(\w+) (\w+)"; "hello world" => a, b);
+        regex_parser!(r"(\w+) (\w+)"; "hello world" => a, b);
         assert_eq!(a, "hello");
         assert_eq!(b, "world");
     }
@@ -49,7 +49,7 @@ Position: x=-1123, y=09123: Ends at 0";
         let parsed = lines
             .lines()
             .map(|line| {
-                regex_parse!(r"Position: x=(.+), y=(.+): Ends at (.+)"; line => x, y, end);
+                regex_parser!(r"Position: x=(.+), y=(.+): Ends at (.+)"; line => x, y, end);
                 Thing {
                     x: x.parse().unwrap(),
                     y: y.parse().unwrap(),
@@ -80,12 +80,12 @@ Position: x=-1123, y=09123: Ends at 0";
     #[test]
     #[should_panic(expected = "Could not locate match in regex!")]
     fn should_fail() {
-        regex_parse!(r"(\d+)-(\d+)"; "1-2" => _a, _b, _c);
+        regex_parser!(r"(\d+)-(\d+)"; "1-2" => _a, _b, _c);
     }
 
     #[test]
     #[should_panic(expected = r#"String "1?-2" does not match regex!"#)]
     fn should_fail2() {
-        regex_parse!(r"(\d+)-(\d+)"; "1?-2" => _a);
+        regex_parser!(r"(\d+)-(\d+)"; "1?-2" => _a);
     }
 }

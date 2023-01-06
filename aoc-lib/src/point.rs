@@ -143,43 +143,53 @@ impl Point {
     const K: Point = Point { x: 0, y: 0, z: 1 };
     const ZERO: Point = Point { x: 0, y: 0, z: 0 };
 
+    #[must_use]
     pub fn origin() -> &'static Self {
         &Self::ORIGIN
     }
 
+    #[must_use]
     pub const fn new(x: i64, y: i64, z: i64) -> Self {
         Self { x, y, z }
     }
 
+    /// # Panics
+    /// Panics if the input is the zero vector which cannot be normalized as it has no dimension
+    #[allow(clippy::cast_precision_loss)]
+    #[allow(clippy::cast_possible_truncation)]
+    #[must_use]
     pub fn normalized(&self) -> Point {
-        if *self == Self::ZERO {
-            panic!("Normalizing zero vector");
-        }
-
+        assert!(*self != Self::ZERO, "Cannot normalize zero vector!");
         *self / (self.len_squared() as f64).sqrt() as i64
     }
 
+    #[must_use]
     pub fn distance_squared(&self, other: &Point) -> i64 {
         (self.x - other.x).pow(2) + (self.y - other.y).pow(2) + (self.z - other.z).pow(2)
     }
 
-    pub fn manhattan_distance(&self, other: &Point) -> u64 {
-        ((self.x - other.x).abs() + (self.y - other.y).abs() + (self.z - other.z).abs()) as u64
+    #[must_use]
+    pub fn manhattan_distance(&self, other: &Point) -> i64 {
+        (self.x - other.x).abs() + (self.y - other.y).abs() + (self.z - other.z).abs()
     }
 
+    #[must_use]
     pub fn plane_neighbors(&self) -> PlaneNeighbours<'_> {
         PlaneNeighbours::new(self)
     }
 
+    #[must_use]
     pub fn points_between(&self, other: &Point) -> Option<PointsBetween> {
         PointsBetween::new(*self, *other)
     }
 
+    #[must_use]
     pub fn len_squared(&self) -> i64 {
         self.x.pow(2) + self.y.pow(2) + self.z.pow(2)
     }
 
-    pub fn down(&self) -> Point {
+    #[must_use]
+    pub fn down(&self) -> Self {
         Point {
             x: self.x,
             y: self.y - 1,
@@ -187,7 +197,8 @@ impl Point {
         }
     }
 
-    pub fn up(&self) -> Point {
+    #[must_use]
+    pub fn up(&self) -> Self {
         Point {
             x: self.x,
             y: self.y + 1,
@@ -195,7 +206,8 @@ impl Point {
         }
     }
 
-    pub fn left(&self) -> Point {
+    #[must_use]
+    pub fn left(&self) -> Self {
         Point {
             x: self.x - 1,
             y: self.y,
@@ -203,7 +215,8 @@ impl Point {
         }
     }
 
-    pub fn right(&self) -> Point {
+    #[must_use]
+    pub fn right(&self) -> Self {
         Point {
             x: self.x + 1,
             y: self.y,
@@ -220,6 +233,7 @@ pub struct PointsBetween {
 }
 
 impl PointsBetween {
+    #[must_use]
     pub fn new(start: Point, end: Point) -> Option<PointsBetween> {
         if end == start {
             return None;

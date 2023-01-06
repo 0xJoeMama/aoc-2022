@@ -18,7 +18,7 @@ impl FromStr for Sensor {
     type Err = Infallible;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        aoc_lib::regex_parse! {
+        aoc_lib::regex_parser! {
             "Sensor at x=(.+), y=(.+): closest beacon is at x=(.+), y=(.+)";
             s => sensor_x, sensor_y, beacon_x, beacon_y
         };
@@ -28,7 +28,7 @@ impl FromStr for Sensor {
 
         Ok(Self {
             pos,
-            distance: pos.manhattan_distance(&beacon_pos).try_into().unwrap(),
+            distance: pos.manhattan_distance(&beacon_pos),
         })
     }
 }
