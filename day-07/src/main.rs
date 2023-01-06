@@ -104,8 +104,8 @@ fn part1(folders: &HashMap<String, Dir>) -> usize {
         .sum()
 }
 
-const MAX_SIZE: usize = 70000000;
-const UPDATE_SIZE: usize = 30000000;
+const MAX_SIZE: usize = 70_000_000;
+const UPDATE_SIZE: usize = 30_000_000;
 
 fn part2(folders: &HashMap<String, Dir>) -> usize {
     let mut cache = HashMap::new();
@@ -120,6 +120,6 @@ fn part2(folders: &HashMap<String, Dir>) -> usize {
         .map(|(_, dir)| dir.calculate_size(folders, &mut cache))
         .collect::<Vec<usize>>();
 
-    sorted.sort();
+    sorted.sort_unstable();
     *sorted.iter().find(|&&size| size >= target_size).unwrap()
 }

@@ -10,7 +10,7 @@ pub mod range;
 pub fn timed<T>(f: impl FnOnce() -> T) -> T {
     let timer = Instant::now();
     let res = f();
-    println!("Task took {:?} to finish!", Instant::now() - timer);
+    println!("Task took {:?} to finish!", timer.elapsed());
     res
 }
 

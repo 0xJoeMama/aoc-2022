@@ -5,7 +5,7 @@ use aoc_lib::input;
 fn main() {
     let _ = input::apply("input-day-10.txt", |input| {
         aoc_lib::timed(|| {
-            aoc_lib::timed(|| println!("{}", solve(input)));
+            aoc_lib::timed(|| println!("{}", solve(&input)));
         });
     });
 }
@@ -53,7 +53,7 @@ impl<'a> Pc<'a> {
         } else {
             self.draw();
 
-            print!("{}", self.draw_buffer);
+            // print!("{}", self.draw_buffer);
             None
         }
     }
@@ -63,10 +63,10 @@ impl<'a> Pc<'a> {
             for i in 0..40 {
                 let current_pixel = self.crt & (1 << i);
 
-                if current_pixel != 0 {
-                    self.draw_buffer.push('█');
-                } else {
+                if current_pixel == 0 {
                     self.draw_buffer.push(' ');
+                } else {
+                    self.draw_buffer.push('█');
                 }
             }
 
@@ -76,7 +76,7 @@ impl<'a> Pc<'a> {
             self.crt = 0;
         }
 
-        if (self.crt_pos as i8 - self.x as i8).abs() <= 1 {
+        if (i64::from(self.crt_pos) - self.x).abs() <= 1 {
             self.crt |= 1 << self.crt_pos;
         }
 
@@ -92,13 +92,15 @@ impl<'a> Pc<'a> {
     }
 }
 
-fn solve(input: String) -> i64 {
+fn solve(input: &str) -> i64 {
     let mut sum = 0;
     let mut pc = Pc::new(input.lines());
 
     while let Some(amount) = pc.poll_clock() {
         sum += amount;
     }
+
+    println!("{}", pc.draw_buffer);
 
     sum
 }

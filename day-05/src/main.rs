@@ -1,4 +1,4 @@
-use std::{str::FromStr, convert::Infallible};
+use std::{convert::Infallible, str::FromStr};
 
 use aoc_codegen::day;
 
@@ -46,16 +46,13 @@ fn parser(input: &str) -> (Vec<Vec<char>>, Vec<Move>) {
         }
     }
 
-    (
-        stacks,
-        moves.lines().flat_map(|l| l.parse::<Move>()).collect(),
-    )
+    (stacks, moves.lines().flat_map(str::parse).collect())
 }
 
 fn part1(input: &(Vec<Vec<char>>, Vec<Move>)) -> String {
     let mut stacks = input.0.clone();
 
-    for mov in input.1.iter() {
+    for mov in &input.1 {
         let from = &mut stacks[mov.from];
         let moved = from.split_off(from.len() - mov.cnt);
         let to = &mut stacks[mov.to];
@@ -69,7 +66,7 @@ fn part1(input: &(Vec<Vec<char>>, Vec<Move>)) -> String {
 fn part2(input: &(Vec<Vec<char>>, Vec<Move>)) -> String {
     let mut stacks = input.0.clone();
 
-    for mov in input.1.iter() {
+    for mov in &input.1 {
         let from = &mut stacks[mov.from];
         let moved = from.split_off(from.len() - mov.cnt);
         let to = &mut stacks[mov.to];

@@ -1,10 +1,12 @@
 [package]
-name = "day-10"
+name = "day-16"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-aoc-lib = { workspace = true }
 aoc-codegen = { workspace = true }
+aoc-lib = { workspace = true }
+regex = "*"
+lazy_static = "*"

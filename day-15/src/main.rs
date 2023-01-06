@@ -1,7 +1,7 @@
 use aoc_codegen::day;
 use aoc_lib::{
     point::Point,
-    range::{NumberRange, Relative},
+    range::{Range, Relative},
 };
 use core::str::FromStr;
 use std::convert::Infallible;
@@ -28,13 +28,13 @@ impl FromStr for Sensor {
 
         Ok(Self {
             pos,
-            distance: pos.manhattan_distance(&beacon_pos) as i64,
+            distance: pos.manhattan_distance(&beacon_pos).try_into().unwrap(),
         })
     }
 }
 
 fn parser(input: &str) -> Vec<Sensor> {
-    let mut res: Vec<Sensor> = input.lines().flat_map(|line| line.parse()).collect();
+    let mut res: Vec<Sensor> = input.lines().flat_map(str::parse).collect();
     res.sort_by_key(|sensor| sensor.pos.x + sensor.distance);
 
     res
@@ -42,7 +42,7 @@ fn parser(input: &str) -> Vec<Sensor> {
 
 const TARGET_Y: i64 = 2_000_000;
 
-fn find_line_poses(sensors: &[Sensor], target_y: i64) -> Vec<NumberRange<i64>> {
+fn find_line_poses(sensors: &[Sensor], target_y: i64) -> Vec<Range<i64>> {
     let mut ranges = sensors
         .iter()
         .filter_map(|s| {
@@ -53,14 +53,14 @@ fn find_line_poses(sensors: &[Sensor], target_y: i64) -> Vec<NumberRange<i64>> {
                 let x1 = s.pos.x - delta_x;
                 let x2 = s.pos.x + delta_x;
 
-                Some(NumberRange::new(x1, x2))
+                Some(Range::new(x1, x2))
             } else {
                 None
             }
         })
         .collect::<Vec<_>>();
 
-    ranges.sort_by_key(NumberRange::get_min);
+    ranges.sort_by_key(Range::get_min);
 
     let mut merged = vec![ranges.remove(0)];
     for i in ranges {
@@ -73,7 +73,7 @@ fn find_line_poses(sensors: &[Sensor], target_y: i64) -> Vec<NumberRange<i64>> {
             Relative::Disjoint => {
                 merged.push(i);
             }
-            _ => {}
+            Relative::Subrange => {}
         }
     }
 

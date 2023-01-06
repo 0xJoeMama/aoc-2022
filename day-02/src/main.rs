@@ -3,7 +3,7 @@ use aoc_codegen::day;
 #[day(2, parser = parser, part1 = part1, part2 = part2)]
 const DAY: u8 = 2;
 
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Copy)]
 #[repr(u8)]
 enum State {
     Rock,
@@ -12,7 +12,7 @@ enum State {
 }
 
 impl State {
-    fn get_winning(&self) -> Self {
+    fn get_winning(self) -> Self {
         match self {
             State::Rock => State::Paper,
             State::Paper => State::Scissors,
@@ -20,7 +20,7 @@ impl State {
         }
     }
 
-    fn get_losing(&self) -> Self {
+    fn get_losing(self) -> Self {
         match self {
             State::Rock => State::Scissors,
             State::Paper => State::Rock,
@@ -28,7 +28,7 @@ impl State {
         }
     }
 
-    fn get_score(&self) -> i32 {
+    fn get_score(self) -> i32 {
         match self {
             State::Rock => 1,
             State::Paper => 2,
@@ -37,8 +37,8 @@ impl State {
     }
 }
 
-fn calculate_points(his: &State, mine: State) -> i32 {
-    (if mine == *his {
+fn calculate_points(his: State, mine: State) -> i32 {
+    (if mine == his {
         3
     } else if mine == his.get_winning() {
         6
@@ -75,7 +75,7 @@ fn part1(input: &[(State, &str)]) -> i32 {
                 "Z" => State::Scissors,
                 _ => unreachable!("invalid input"),
             };
-            calculate_points(&pair.0, mine)
+            calculate_points(pair.0, mine)
         })
         .sum::<i32>()
 }
@@ -86,11 +86,11 @@ fn part2(input: &[(State, &str)]) -> i32 {
         .map(|pair| {
             let mine = match pair.1 {
                 "X" => pair.0.get_losing(),
-                "Y" => pair.0.clone(),
+                "Y" => pair.0,
                 "Z" => pair.0.get_winning(),
                 _ => unreachable!("invalid input"),
             };
-            calculate_points(&pair.0, mine)
+            calculate_points(pair.0, mine)
         })
         .sum::<i32>()
 }

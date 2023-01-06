@@ -8,9 +8,9 @@ where
 {
     dups.into_iter().fold(0, |acc, c| {
         if c.is_lowercase() {
-            acc + ((c as u8) - 96) as i32
+            acc + i32::from((c as u8) - 96)
         } else {
-            acc + ((c as u8) - 65 + 27) as i32
+            acc + i32::from((c as u8) - 65 + 27)
         }
     })
 }

@@ -52,9 +52,6 @@ impl PacketValue {
     }
 
     fn parse_list(iter: &mut impl Iterator<Item = char>) -> Self {
-        let mut list = Vec::new();
-        let mut current = String::new();
-
         fn collect(container: &mut Vec<PacketValue>, current: &mut String) {
             if current.is_empty() {
                 return;
@@ -63,6 +60,9 @@ impl PacketValue {
             container.push(PacketValue::Number(current.parse().unwrap()));
             current.clear();
         }
+
+        let mut list = Vec::new();
+        let mut current = String::new();
 
         while let Some(c) = iter.next() {
             match c {
@@ -98,7 +98,7 @@ fn parser(input: &str) -> Vec<PacketValue> {
     input
         .lines()
         .filter(|s| !s.is_empty())
-        .flat_map(|packet| packet.parse::<PacketValue>())
+        .flat_map(str::parse)
         .collect()
 }
 

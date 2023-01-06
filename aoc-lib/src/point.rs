@@ -301,6 +301,7 @@ impl Direction {
         Direction::NegY,
     ];
 
+    #[must_use]
     pub fn to_point(&self) -> Point {
         match self {
             Direction::PosX => Point::I,
@@ -312,6 +313,7 @@ impl Direction {
         }
     }
 
+    #[must_use]
     pub fn plane() -> &'static [Direction; 4] {
         &Self::PLANE
     }

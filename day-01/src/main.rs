@@ -27,6 +27,6 @@ fn part2(input: &str) -> i32 {
         })
         .collect::<Vec<_>>();
 
-    calories.sort();
+    calories.sort_unstable();
     calories[calories.len() - 3..].iter().sum()
 }

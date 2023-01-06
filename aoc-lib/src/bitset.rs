@@ -1,12 +1,14 @@
-use std::mem;
+use std::{fmt::Display, mem};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Hash, PartialEq, Eq)]
 pub struct BitSet {
     data: Vec<usize>,
     len: usize,
 }
 
 impl BitSet {
+    const BUCKET_SIZE: usize = mem::size_of::<usize>() * 8; // in bits
+
     pub fn new() -> Self {
         Self {
             data: Vec::new(),
@@ -14,81 +16,60 @@ impl BitSet {
         }
     }
 
-    /// Specify capacity in bits
     pub fn with_capacity(cap: usize) -> Self {
         Self {
-            data: Vec::with_capacity(cap / mem::size_of::<usize>()),
+            data: Vec::with_capacity(cap / Self::BUCKET_SIZE),
             len: 0,
         }
+    }
+
+    pub fn all_false(cap: usize) -> Self {
+        Self {
+            data: vec![0; cap / Self::BUCKET_SIZE + 1],
+            len: cap,
+        }
+    }
+
+    pub fn all_true(cap: usize) -> Self {
+        Self {
+            data: vec![usize::MAX; cap / Self::BUCKET_SIZE],
+            len: cap,
+        }
+    }
+
+    pub fn insert(&mut self, value: bool) {
+        if self.len % Self::BUCKET_SIZE == 0 {
+            self.data.push(0);
+        }
+
+        if value {
+            self.data[self.len / Self::BUCKET_SIZE] |= 1 << (self.len % Self::BUCKET_SIZE);
+        }
+
+        self.len += 1;
+    }
+
+    pub fn toggle(&mut self, index: usize) {
+        self.data[index / Self::BUCKET_SIZE] ^= 1 << (index % Self::BUCKET_SIZE);
+    }
+
+    pub fn get(&self, index: usize) -> bool {
+        self.data[index / Self::BUCKET_SIZE] & (1 << (index % Self::BUCKET_SIZE)) != 0
     }
 
     pub fn len(&self) -> usize {
         self.len
     }
 
-    pub fn is_empty(&self) -> bool {
-        self.len == 0
-    }
-
-    /// Sets the bit at the given index to true
-    pub fn insert(&mut self, index: usize) {
-        let bucket = index / mem::size_of::<usize>();
-        let bit = index % mem::size_of::<usize>();
-
-        if bucket >= self.data.len() {
-            self.data.resize(bucket + 1, 0);
-        }
-
-        self.data[bucket] |= 1 << bit;
-    }
-
-    pub fn remove(&mut self, index: usize) {
-        let bucket = index / mem::size_of::<usize>();
-        let bit = index % mem::size_of::<usize>();
-
-        if bucket >= self.data.len() {
-            return;
-        }
-
-        self.data[bucket] &= !(1 << bit);
-    }
-
-    pub fn toggle(&mut self, index: usize) {
-        let bucket = index / mem::size_of::<usize>();
-        let bit = index % mem::size_of::<usize>();
-
-        if bucket >= self.data.len() {
-            self.data.resize(bucket + 1, 0);
-        }
-
-        self.data[bucket] ^= 1 << bit;
-    }
-
-    pub fn contains(&self, index: usize) -> bool {
-        let bucket = index / mem::size_of::<usize>();
-        let bit = index % mem::size_of::<usize>();
-
-        if bucket >= self.data.len() {
-            return false;
-        }
-
-        self.data[bucket] & (1 << bit) != 0
-    }
-
-    pub fn get(&self, index: usize) -> bool {
-        self.contains(index)
-    }
-
-    pub fn set(&mut self, index: usize, value: bool) {
-        if value {
-            self.insert(index);
-        } else {
-            self.remove(index);
-        }
-    }
-
     pub fn iter(&self) -> BitSetIter {
         BitSetIter {
+            bitset: self,
+            idx: 0,
+        }
+    }
+
+    pub fn iter_true(&self) -> BitSetTrueIter {
+        BitSetTrueIter {
             bitset: self,
             idx: 0,
         }
@@ -114,9 +95,46 @@ impl<'a> Iterator for BitSetIter<'a> {
             return None;
         }
 
-        let result = self.bitset.contains(self.idx);
+        let result = self.bitset.get(self.idx);
         self.idx += 1;
         Some(result)
+    }
+}
+
+impl Display for BitSet {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for i in 0..self.len {
+            if self.get(i) {
+                write!(f, "1")?;
+            } else {
+                write!(f, "0")?;
+            }
+        }
+
+        Ok(())
+    }
+}
+
+pub struct BitSetTrueIter<'a> {
+    bitset: &'a BitSet,
+    idx: usize,
+}
+
+impl<'a> Iterator for BitSetTrueIter<'a> {
+    type Item = usize;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        while self.idx < self.bitset.len {
+            if self.bitset.get(self.idx) {
+                let result = self.idx;
+                self.idx += 1;
+                return Some(result);
+            }
+
+            self.idx += 1;
+        }
+
+        None
     }
 }
 
@@ -126,7 +144,8 @@ mod test {
 
     #[test]
     fn test_bitset() {
-        let mut bs = BitSet::with_capacity(100);
+        let mut bs = BitSet::all_false(10);
+        assert!(bs.iter().all(|b| !b));
         for i in 0..100 {
             assert!(!bs.get(i));
             bs.toggle(i);

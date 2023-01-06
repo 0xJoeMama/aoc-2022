@@ -5,7 +5,7 @@ use std::{
 };
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub struct NumberRange<T>
+pub struct Range<T>
 where
     T: Copy + Add + Ord + PartialOrd + Eq + PartialEq + Mul,
 {
@@ -19,12 +19,12 @@ pub enum Relative {
     Disjoint,
 }
 
-impl<T> NumberRange<T>
+impl<T> Range<T>
 where
     T: Copy + Add + Sub<Output = T> + Ord + PartialOrd + Eq + PartialEq + Mul,
 {
-    pub fn new(min: T, max: T) -> NumberRange<T> {
-        NumberRange { min, max }
+    pub fn new(min: T, max: T) -> Range<T> {
+        Range { min, max }
     }
 
     pub fn contains(&self, i: T) -> bool {
@@ -32,7 +32,7 @@ where
     }
 
     /// Checks if other is a subrange of self.
-    pub fn subrange(&self, other: &NumberRange<T>) -> bool {
+    pub fn subrange(&self, other: &Range<T>) -> bool {
         self.min >= other.min && self.max <= other.max
     }
 
@@ -73,11 +73,11 @@ where
     }
 }
 
-impl<A> FromIterator<NumberRange<A>> for (NumberRange<A>, NumberRange<A>)
+impl<A> FromIterator<Range<A>> for (Range<A>, Range<A>)
 where
     A: Copy + Add + Ord + PartialOrd + Eq + PartialEq + Mul,
 {
-    fn from_iter<T: IntoIterator<Item = NumberRange<A>>>(iter: T) -> Self {
+    fn from_iter<T: IntoIterator<Item = Range<A>>>(iter: T) -> Self {
         let mut iter = iter.into_iter();
         let first = iter.next().unwrap();
         let last = iter.next().unwrap();
@@ -85,7 +85,7 @@ where
     }
 }
 
-impl FromStr for NumberRange<i32> {
+impl FromStr for Range<i32> {
     type Err = Infallible;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {

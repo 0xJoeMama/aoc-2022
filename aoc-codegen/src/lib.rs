@@ -39,10 +39,10 @@ impl Parse for Args {
                 _ => return Err(syn::Error::new(id.span(), "unknown argument")),
             }
 
-            if !input.peek(Token![,]) {
-                break;
-            } else {
+            if input.peek(Token![,]) {
                 input.parse::<Token![,]>()?;
+            } else {
+                break;
             }
         }
 
@@ -55,6 +55,9 @@ impl Parse for Args {
     }
 }
 
+/// Generates a main function for the day.
+/// # Panics
+/// Panics if the day is not a number.
 #[proc_macro_attribute]
 pub fn day(attr: TokenStream, _item: TokenStream) -> TokenStream {
     let args = syn::parse_macro_input!(attr as Args);
