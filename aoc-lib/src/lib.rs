@@ -1,7 +1,6 @@
 use std::time::Instant;
 
 pub mod bitset;
-pub mod either;
 pub mod input;
 pub mod parse;
 pub mod point;
