@@ -12,6 +12,7 @@ struct Node {
 
 #[allow(unused)]
 
+#[derive(Debug)]
 struct Graph {
     nodes: Vec<Node>,
     index: HashMap<String, usize>,
@@ -50,8 +51,9 @@ fn parser(input: &str) -> Graph {
     input.parse().unwrap()
 }
 
-fn part1(_input: &Graph) -> usize {
-    todo!()
+fn part1(input: &Graph) -> usize {
+    println!("{:?}", input);
+    0
 }
 
 fn part2(_input: &Graph) -> usize {
